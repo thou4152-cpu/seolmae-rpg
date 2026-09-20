@@ -1,0 +1,172 @@
+
+*{box-sizing:border-box} body{margin:0;background:#171b22;color:#eee;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+button{font:inherit}.hidden{display:none!important}#app{max-width:980px;margin:auto;min-height:100vh;background:#202631}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#11161d;border-bottom:3px solid #6e7b58}
+h1{font-size:20px;margin:0;letter-spacing:2px}#saveState{font-size:12px;color:#aab5c4}
+main{padding:18px}.panel{background:#2a3240;border:2px solid #475365;border-radius:8px;padding:16px;margin-bottom:14px;box-shadow:0 5px 0 #11161d}
+.title{font-weight:800;font-size:19px;margin-bottom:10px}.sub{color:#b9c4d2;font-size:13px}.grid{display:grid;gap:10px}
+.jobs{grid-template-columns:repeat(2,1fr)}.job,.action,.npc,.stageBtn{background:#333d4c;color:#fff;border:2px solid #59677b;border-radius:7px;padding:13px;cursor:pointer}
+.job:hover,.action:hover,.npc:hover,.stageBtn:hover{transform:translateY(-1px);border-color:#aab88c}
+.job b{display:block;font-size:18px;margin-bottom:4px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:12px;margin-top:10px}
+.stat{background:#1c222c;padding:7px;border-radius:4px}.bar{height:13px;background:#11161d;border:1px solid #465161;margin-top:4px;position:relative}
+.fill{height:100%;background:#b8c77e}.mp .fill{background:#829bd0}.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:120px}
+.big{font-size:24px;font-weight:900}.enemyGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.enemy{background:#252c36;border:2px solid #4d5968;padding:10px;border-radius:6px;text-align:center}
+.enemy.dead{opacity:.35}.enemy.target{border-color:#d9c56c}.sprite{font-size:42px;image-rendering:pixelated}
+.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.action{padding:11px 6px;text-align:center}.action:disabled{opacity:.35;cursor:not-allowed}
+.log{height:150px;overflow:auto;background:#14191f;padding:10px;border-radius:5px;font-size:13px;line-height:1.55}
+.reward{color:#e2ce75}.danger{color:#ed8e8e}.good{color:#9bd59e}.rare{color:#dba8ff}
+.badge{display:inline-block;padding:2px 7px;border-radius:10px;background:#171c24;font-size:11px;margin:2px}
+.nav{display:flex;gap:8px;margin-bottom:14px}.nav button{flex:1}.equip{font-size:12px;line-height:1.7}
+#toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#0e1217;border:2px solid #6f7c8d;padding:10px 16px;border-radius:6px;display:none;z-index:20}
+@media(max-width:650px){main{padding:10px}.jobs{grid-template-columns:1fr}.enemyGrid{grid-template-columns:repeat(3,1fr)}.actions{grid-template-columns:repeat(3,1fr)}.stats{grid-template-columns:repeat(2,1fr)}h1{font-size:16px}}
+
+.itemVisual{display:flex;align-items:center;gap:12px;margin:8px 0}
+.weaponIcon{width:112px;height:72px;object-fit:contain;background:#171c24;border:1px solid #536071;border-radius:7px;image-rendering:auto}
+.combatHero{position:relative;text-align:center;margin:8px 0 14px}
+.heroSprite{display:inline-block;font-size:46px;transition:transform .16s ease}
+.heroSprite.attackMelee{animation:meleeLunge .36s ease}
+.heroSprite.attackRanged{animation:rangedKick .36s ease}
+.heroSprite.attackMagic{animation:magicCast .42s ease}
+.enemy.hit{animation:enemyHit .28s ease}
+@keyframes meleeLunge{0%{transform:translateX(0)}45%{transform:translateX(75px) scale(1.15)}100%{transform:translateX(0)}}
+@keyframes rangedKick{0%,100%{transform:translateX(0)}45%{transform:translateX(-8px) rotate(-8deg)}}
+@keyframes magicCast{0%,100%{transform:scale(1)}45%{transform:scale(1.25) rotate(8deg);filter:brightness(1.8)}}
+@keyframes enemyHit{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+
+.npc .weaponIcon{margin:auto}.equip>.weaponIcon{margin-right:10px}
+
+.battleStage{position:relative;min-height:430px;border:2px solid #5b6470;border-radius:8px;overflow:hidden;background-image:linear-gradient(rgba(8,12,18,.08),rgba(8,12,18,.28)),url("assets/battle/goblin_cave.jpg");background-size:cover;background-position:center;box-shadow:inset 0 -50px 80px rgba(0,0,0,.35)}
+.playerFighter{position:absolute;left:5%;bottom:18px;width:29%;max-width:250px;z-index:3;text-align:center;transition:transform .2s ease}
+.playerFighter img{width:100%;border-radius:12px;mix-blend-mode:normal;box-shadow:0 12px 22px rgba(0,0,0,.4)}
+.enemyLine{position:absolute;right:2%;bottom:20px;width:58%;display:flex;align-items:flex-end;justify-content:flex-end;gap:5px;z-index:4}
+.battleEnemy{width:31%;min-width:95px;text-align:center;cursor:pointer;transition:transform .16s,filter .16s}
+.battleEnemy:hover{transform:translateY(-6px);filter:brightness(1.15)}
+.battleEnemy img{width:100%;max-height:175px;object-fit:cover;object-position:center;border-radius:9px;box-shadow:0 8px 18px rgba(0,0,0,.45)}
+.battleEnemy .bar{height:10px;margin:3px 5px}
+.enemyName{font-size:12px;font-weight:800;text-shadow:0 2px 3px #000}
+.battleHud{display:grid;grid-template-columns:1fr 1.35fr;gap:10px;margin-top:10px}
+.commandPanel{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.combatLog{height:155px}
+.damageFloat{position:absolute;z-index:20;font-size:28px;font-weight:900;color:#fff;text-shadow:2px 2px 0 #000;animation:floatDamage .65s ease forwards;pointer-events:none}
+.slashFx{position:absolute;z-index:19;font-size:64px;animation:slashFx .35s ease forwards;pointer-events:none}
+.projectileFx{position:absolute;z-index:19;font-size:40px;animation:projectile 0.45s linear forwards;pointer-events:none}
+@keyframes floatDamage{0%{opacity:0;transform:translateY(10px) scale(.8)}20%{opacity:1;transform:translateY(0) scale(1.2)}100%{opacity:0;transform:translateY(-55px) scale(1)}}
+@keyframes slashFx{0%{opacity:0;transform:rotate(-35deg) scale(.5)}30%{opacity:1}100%{opacity:0;transform:rotate(25deg) scale(1.5)}}
+@keyframes projectile{0%{left:25%;opacity:1}100%{left:72%;opacity:.2}}
+.playerFighter.attackMelee{animation:newMelee .42s ease}
+.playerFighter.attackRanged{animation:newRanged .42s ease}
+.playerFighter.attackMagic{animation:newMagic .5s ease}
+.battleEnemy.hit{animation:newHit .32s ease}
+@keyframes newMelee{0%{transform:translateX(0)}48%{transform:translateX(130px) scale(1.05)}100%{transform:translateX(0)}}
+@keyframes newRanged{0%,100%{transform:translateX(0)}45%{transform:translateX(-10px) rotate(-3deg)}}
+@keyframes newMagic{0%,100%{filter:none}45%{filter:brightness(1.7) drop-shadow(0 0 16px #78aaff);transform:scale(1.05)}}
+@keyframes newHit{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px);filter:brightness(2)}65%{transform:translateX(10px)}}
+@media(max-width:650px){.battleStage{min-height:330px}.playerFighter{width:34%;left:1%}.enemyLine{width:66%;right:0}.battleEnemy img{max-height:125px}.battleHud{grid-template-columns:1fr}.enemyName{font-size:10px}}
+
+.skillDock{display:grid;grid-template-columns:repeat(6,minmax(80px,1fr));gap:8px;margin-top:10px}
+.skillBtn{position:relative;background:#171d26;border:2px solid #59677b;border-radius:7px;color:#fff;padding:5px;cursor:pointer;min-height:112px}
+.skillBtn:hover{border-color:#e4c76b;transform:translateY(-2px)}
+.skillBtn img{width:58px;height:58px;object-fit:cover;border-radius:5px;display:block;margin:0 auto 4px}
+.skillBtn small{display:block;color:#aeb8c6;font-size:10px}
+.skillBtn.disabled{opacity:.4}
+@media(max-width:650px){.skillDock{grid-template-columns:repeat(3,1fr)}.skillBtn{min-height:100px}}
+
+.battleEnemy.targetable{outline:3px solid #e7c55f;outline-offset:2px;animation:targetPulse .85s ease-in-out infinite}
+.battleEnemy.targetable:after{content:"▼ TARGET";display:block;color:#ffe17c;font-size:11px;font-weight:900;text-shadow:0 2px 3px #000}
+.targetPrompt{margin:10px 0 0;text-align:center;border-color:#d5b857;background:#282619}
+@keyframes targetPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35);transform:translateY(-4px)}}
+
+.playerFighter.attackRogue{animation:rogueDash .34s ease}
+@keyframes rogueDash{0%{transform:translateX(0);opacity:1}30%{transform:translateX(95px);opacity:.35}55%{transform:translateX(145px) scale(1.04);opacity:1}72%{transform:translateX(105px);opacity:.45}100%{transform:translateX(0);opacity:1}}
+
+.battleEnemy.bossEnemy{width:44%;min-width:180px;filter:drop-shadow(0 0 12px rgba(255,80,35,.7))}
+.battleEnemy.bossEnemy img{max-height:265px;border:2px solid #b76b36;box-shadow:0 0 20px rgba(255,70,20,.35),0 12px 25px rgba(0,0,0,.7)}
+.battleEnemy.bossEnemy .enemyName{font-size:16px;color:#ffd37b;letter-spacing:1px}
+.battleEnemy.bossEnemy .bar{height:14px;border:1px solid #d5a24c}
+
+.bossDrop{color:#ffd36a;text-shadow:0 0 10px rgba(255,174,45,.75)}
+.bossSetText{margin-top:8px;padding:8px;border:1px solid #9b6b2f;background:#251a10;color:#f4cf82;border-radius:6px;font-weight:700}
+
+.bossSetPanel{margin:10px 0;border:2px solid #9b6b2f;background:linear-gradient(180deg,#281c10,#17120d)}
+.bossSetPanel .title{color:#ffd67a}
+.setCount{float:right;color:#fff0b0}
+.setRow{display:grid;grid-template-columns:26px 62px 1fr;gap:6px;align-items:center;padding:7px 5px;border-top:1px solid rgba(212,164,75,.18);font-size:12px}
+.setActive{color:#ffe2a1}
+.setLocked{color:#777;filter:saturate(.45)}
+.bossTag{display:inline-block;padding:2px 6px;border:1px solid #a87532;border-radius:4px;background:#2c1d0d;color:#ffd275;font-size:11px;font-weight:800}
+
+.lockedTurn .battleActions button,.lockedTurn .skillBar button{opacity:.55;pointer-events:none}
+.turnState{font-size:11px;opacity:.7}
+
+.inventorySort{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
+.inventorySort .sortOn{border-color:#d7a64b;box-shadow:0 0 8px rgba(215,166,75,.35);color:#ffd77c}
+
+.fireballFx{position:absolute;z-index:40;font-size:34px;line-height:1;pointer-events:none;
+ filter:drop-shadow(0 0 7px #ff9b2f) drop-shadow(0 0 14px #e43c13);will-change:transform}
+.fireballFx.explode{font-size:46px;animation:fireBurst .18s ease-out}
+@keyframes fireBurst{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.8);opacity:0}}
+
+.fireballFx{position:absolute!important;z-index:999!important;width:42px;height:42px;border-radius:50%;
+pointer-events:none!important;background:radial-gradient(circle,#fff7a0 0 12%,#ffb000 28%,#ff4a00 58%,rgba(255,30,0,.05) 72%);
+box-shadow:0 0 10px #fff1a0,0 0 22px #ff8a00,0 0 38px #ff3200;will-change:transform}
+.fireballFx .fireCore{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:26px;color:#fff7a0;text-shadow:0 0 8px #ff3200}
+.fireballFx.explode{animation:fireExplosion .22s ease-out forwards}
+@keyframes fireExplosion{0%{transform:scale(1);opacity:1}100%{transform:scale(2.7);opacity:0}}
+
+.bossSetPanelV2{margin:12px 0 16px;padding:12px;border:2px solid #d6a13a;border-radius:10px;
+background:linear-gradient(180deg,#39250f,#1d160e);box-shadow:0 0 16px rgba(220,161,50,.25)}
+.setHeader{display:flex;justify-content:space-between;align-items:center;color:#ffd56f;font-size:17px;font-weight:900;margin-bottom:4px}
+.setHeader b{padding:4px 8px;border-radius:12px;background:#5a3a12;color:#fff0b5;font-size:12px}
+.setHint{font-size:11px;color:#c8b58d;margin-bottom:9px}
+.setEffectRow{display:grid;grid-template-columns:28px 52px 1fr;gap:6px;align-items:center;padding:8px 5px;border-top:1px solid rgba(255,211,111,.14)}
+.setEffectRow.active{color:#ffe19a;background:rgba(170,112,24,.12)}
+.setEffectRow.locked{color:#777}
+.setEffectRow.active .setCheck{color:#8eff9d;font-weight:900}
+.setNeed{font-weight:900}
+.setDesc{font-size:12px}
+.bossItemSetInfo{margin:5px 0;padding:6px;border-left:3px solid #d6a13a;background:rgba(90,58,18,.28);color:#ffd986;font-size:11px}
+
+.fireballOverlay{position:fixed!important;width:48px;height:48px;z-index:2147483647!important;pointer-events:none!important;
+border-radius:50%;filter:drop-shadow(0 0 9px #ffea70) drop-shadow(0 0 20px #ff4b00)}
+.fireballCore{position:absolute;inset:5px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fff 0 8%,#fff16b 18%,#ff9a00 42%,#ff3b00 68%,#8d1000 100%);
+box-shadow:0 0 12px #fff37b,0 0 25px #ff4a00}
+.fireTail{position:absolute;width:62px;height:24px;right:30px;top:12px;border-radius:50%;
+background:linear-gradient(90deg,transparent,#ff3b00,#ffc400);filter:blur(4px);transform:skewX(-20deg);z-index:-1}
+.fireballHit{filter:none}
+.fireExplosion{position:absolute;left:-22px;top:-22px;width:92px;height:92px;display:flex;align-items:center;justify-content:center;
+font-size:82px;color:#fff17b;text-shadow:0 0 10px #fff,0 0 24px #ff9a00,0 0 42px #ff2500;animation:fbBoom .26s ease-out forwards}
+@keyframes fbBoom{0%{transform:scale(.45);opacity:1}100%{transform:scale(1.55);opacity:0}}
+
+
+/* ============================
+   MOBILE BRANCH v1
+   PC branch remains separate.
+   ============================ */
+html,body{overscroll-behavior:none}
+button{touch-action:manipulation}
+@media (max-width: 700px){
+  html,body{width:100%;min-height:100%;overflow-x:hidden}
+  body{font-size:14px}
+  #app,.app,.game{width:100%!important;max-width:100%!important;margin:0!important;padding:8px!important;box-sizing:border-box}
+  .topbar,.hud,.statusBar{position:sticky;top:0;z-index:80;max-width:100%;box-sizing:border-box}
+  button,.stageBtn,.actionBtn,.skillBtn{min-height:46px!important;font-size:14px!important;padding:9px 10px!important}
+  .battleStage{min-height:390px!important;width:100%!important;overflow:hidden!important}
+  .battleActions,.skillBar,.actionRow{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .battleEnemy{max-width:31%!important}
+  .panel,.card{max-width:100%!important;box-sizing:border-box}
+  .inventorySort{position:sticky;top:48px;z-index:50;background:rgba(20,16,12,.94);padding:6px;border-radius:8px}
+  .inventorySort button{min-height:38px!important;font-size:12px!important}
+  .bossSetPanelV2{font-size:12px}
+  .setHeader{font-size:15px}
+  .setEffectRow{grid-template-columns:24px 48px 1fr}
+  .shopGrid,.inventoryGrid,.equipmentGrid{grid-template-columns:1fr!important}
+  img{max-width:100%;height:auto}
+  .modal,.dialog{width:94vw!important;max-width:94vw!important;max-height:85vh!important;overflow:auto!important}
+}
+@media (max-width: 430px){
+  body{font-size:13px}
+  button,.stageBtn,.actionBtn,.skillBtn{min-height:48px!important}
+  .battleStage{min-height:360px!important}
+  .battleActions,.skillBar,.actionRow{grid-template-columns:1fr 1fr!important}
+  .setDesc{font-size:11px}
+}

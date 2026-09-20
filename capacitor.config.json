@@ -1,0 +1,8 @@
+{
+  "appId": "com.dungeonrpg.mobile",
+  "appName": "Dungeon RPG",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
