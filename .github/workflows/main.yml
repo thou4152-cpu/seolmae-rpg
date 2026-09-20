@@ -25,21 +25,20 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install dependencies
         run: npm install
 
       - name: Create Android project
         run: npx cap add android
 
-      - name: Sync mobile game
+      - name: Sync game files
         run: npx cap sync android
 
       - name: Build APK
         working-directory: android
-        run: chmod +x gradlew && ./gradlew assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
